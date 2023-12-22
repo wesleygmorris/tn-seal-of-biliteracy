@@ -10,6 +10,13 @@ from dotenv import load_dotenv
 sns.set_theme(context='notebook', style='darkgrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
 load_dotenv()
 
+languages = ['Afar', 'Abkhazian', 'Afrikaans', 'Akan', 'Albanian', 'American Sign Language', 'Amharic', 'Arabic', 'Aragonese', 'Armenian', 'Assamese', 'Avaric', 'Avestan', 'Aymara', 'Azerbaijani', 'Bashkir', 'Bambara', 'Basque', 'Belarusian', 'Bengali', 'Bihari languages', 'Bislama', 'Tibetan', 'Bosnian', 'Breton', 'Bulgarian', 'Burmese', 'Catalan; Valencian', 'Czech', 'Chamorro', 'Chechen', 'Chinese', 'Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; Old Church Slavonic', 'Chuvash', 'Cornish', 'Corsican', 'Cree', 'Welsh', 'Czech', 'Danish', 'German', 'Divehi; Dhivehi; Maldivian', 'Dutch; Flemish', 'Dzongkha', 'Greek, Modern (1453-)', 'English', 'Esperanto', 'Estonian', 'Basque', 'Ewe', 'Faroese', 'Persian', 'Fijian', 'Finnish', 'French', 'Western Frisian', 'Fulah', 'Georgian', 'German', 'Gaelic; Scottish Gaelic', 'Irish', 'Galician', 'Manx', 'Greek, Modern (1453-)', 'Guarani', 'Gujarati', 'Haitian; Haitian Creole', 'Hausa', 'Hebrew', 'Herero', 'Hindi', 'Hiri Motu', 'Croatian', 'Hungarian', 'Armenian', 'Igbo', 'Icelandic', 'Ido', 'Sichuan Yi; Nuosu', 'Inuktitut', 'Interlingue; Occidental', 'Interlingua (International Auxiliary Language Association)', 'Indonesian', 'Inupiaq', 'Icelandic', 'Italian', 'Javanese', 'Japanese', 'Kalaallisut; Greenlandic', 'Kannada', 'Kashmiri', 'Georgian', 'Kanuri', 'Kazakh', 'Central Khmer', 'Kikuyu; Gikuyu', 'Kinyarwanda', 'Kirghiz; Kyrgyz', 'Komi', 'Kongo', 'Korean', 'Kuanyama; Kwanyama', 'Kurdish', 'Lao', 'Latin', 'Latvian', 'Limburgan; Limburger; Limburgish', 'Lingala', 'Lithuanian', 'Luxembourgish; Letzeburgesch', 'Luba-Katanga', 'Ganda', 'Macedonian', 'Marshallese', 'Malayalam', 'Maori', 'Marathi', 'Malay', 'Micmac', 'Macedonian', 'Malagasy', 'Maltese', 'Mongolian', 'Maori', 'Malay', 'Burmese', 'Nauru', 'Navajo; Navaho', 'Ndebele, South; South Ndebele', 'Ndebele, North; North Ndebele', 'Ndonga', 'Nepali', 'Dutch; Flemish', 'Norwegian Nynorsk; Nynorsk, Norwegian', 'Bokmål, Norwegian; Norwegian Bokmål', 'Norwegian', 'Occitan (post 1500)', 'Ojibwa', 'Oriya', 'Oromo', 'Ossetian; Ossetic', 'Panjabi; Punjabi', 'Persian', 'Pali', 'Polish', 'Portuguese', 'Pushto; Pashto', 'Quechua', 'Romansh', 'Romanian; Moldavian; Moldovan', 'Romanian; Moldavian; Moldovan', 'Rundi', 'Russian', 'Sango', 'Sanskrit', 'Sinhala; Sinhalese', 'Slovak', 'Slovak', 'Slovenian', 'Northern Sami', 'Samoan', 'Shona', 'Sindhi', 'Somali', 'Sotho, Southern', 'Spanish; Castilian', 'Albanian', 'Sardinian', 'Serbian', 'Swati', 'Sundanese', 'Swahili', 'Swedish', 'Tahitian', 'Tamil', 'Tatar', 'Telugu', 'Tajik', 'Tagalog', 'Thai', 'Tibetan', 'Tigrinya', 'Tonga (Tonga Islands)', 'Tswana', 'Tsonga', 'Turkmen', 'Turkish', 'Twi', 'Uighur; Uyghur', 'Ukrainian', 'Urdu', 'Uzbek', 'Venda', 'Vietnamese', 'Volapük', 'Welsh', 'Walloon', 'Wolof', 'Xhosa', 'Yiddish', 'Yoruba', 'Zhuang; Chuang', 'Chinese', 'Zulu']
+english_criteria = ['AAPPL, ESL (for ELs Only)', 'ACT Reading Portion', 'AP Literature', 
+                    'Cambridge AICE Language & Literature', 'Dual Enrollment ELA Course', 
+                    'IB English Language & Literature', 'SAT Evidence-Based Reading & Writing Sub-Part', 
+                    'TNReady ELA EOC Assessments', 'WIDA ACCESS-Composite (for ELs only)']     
+world_criteria = ['AP World Language', 'ACTFL-Aligned Asses (AAPPL, STAMP4S, ALTA, etc.)', 'ASLPI', 'Cambridge AICE World Language', 'CEFR-Aligned Assessment', 'CLEP', 'Foreign Government\'s Language Exam', 'IB World Language', 'SLPI:ASL']
+
 def init_connection():
     url = os.getenv('db_url')
     key = os.getenv('db_key')
@@ -35,7 +42,7 @@ def find_schools():
 schools =[i['school_name'] for i in find_schools().data]
 
 st.image('./seal.jpg')
-tab1, tab2, tab3 = st.tabs(["Add School", "Edit Recipients", "Data and Visualizations"])
+tab1, tab2, tab3 = st.tabs(["Register or Update Participating School", "Submit Recipients", "Data and Visualizations"])
 # Add schools tab
 with tab1:
     add_school_output = {}
@@ -144,26 +151,29 @@ with tab2:
     # add student tab
     with add_student:
         with st.form("new_recipient", clear_on_submit=True):
+
             st.subheader('Add a Student to the Record')
             c1, c2 = st.columns(2)
             with c1:
                 recipient_first_name = st.text_input('Recipient First Name').lower()
             with c2:
                 recipient_last_name = st.text_input('Recipient Last Name').lower()
-            student_demographics = st.text_input('Student Demographics').lower()
-            level_of_award = st.text_input('Level of Award').lower()
+            d1, d2, d3 = st.columns(3)
+            with d1:
+                student_demographics = st.text_input('Student Demographics').lower()
+            level_of_award = st.selectbox('Level of Award', ['Pathway to Biliteracy for Middle Grades', 'Seal of Biliteracy', 'Seal of Bilingualism', 'Seal of Biliteracy Honors']).lower()
             c3, c4, c5 = st.columns(3)
             with c3:
-                ela_average = st.number_input('ELA Average')
+                ela_average = st.number_input('ELA Average')       
             with c4:
-                english_proficiency_criteria = st.text_input('English Proficiency Criteria').lower()
+                english_proficiency_criteria = st.selectbox('English Proficiency Criteria', english_criteria).lower()
             with c5:
                 english_proficiency_criteria_score = st.number_input('English Proficiency Critera Score')
             c6, c7, c8 = st.columns(3)
             with c6:
-                language_for_seal = st.text_input('World Language for Seal').lower()
+                language_for_seal = st.multiselect('World Language for Seal', languages)
             with c7:
-                language_proficiency_criteria = st.text_input('Language Proficiency Criteria').lower()
+                language_proficiency_criteria = st.selectbox('Language Proficiency Criteria', world_criteria).lower()
             with c8:
                 language_criteria_score = st.number_input('Language Criteria Score')
             volunteer_hours = st.radio('OPTIONAL: 10+ Documented Volunteer Hours, if applying for Honors', ['Yes', 'No'])
