@@ -7,8 +7,6 @@ import seaborn as sns
 from matplotlib import pyplot as plt 
 from dotenv import load_dotenv
 
-save=''
-
 sns.set_theme(context='notebook', style='darkgrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
 load_dotenv()
 
@@ -77,7 +75,7 @@ with tab1:
                 required = [contact_first_name, contact_last_name, contact_title, contact_email, contact_phone_number, participate_as, level, 
                             school_name, school_address_1, school_city, school_state, school_zip, school_title_I, school_goals]
                 if any(not i for i in required):
-                    st.write('Please make sure that all fields are filled in.')
+                    st.write(':red[Please make sure that all fields are filled in.]')
                 else:
                     upload_data = {'contact_first_name': contact_first_name, 'contact_last_name':contact_last_name, 'contact_title':contact_title, 
                             'contact_email':contact_email, 'contact_phone_number':contact_phone_number, 'participate_as':participate_as, 'level':str(level), 
@@ -87,14 +85,16 @@ with tab1:
                     
                     def check_school_name(name):
                         data, count = supabase.table('schools').select('*').eq('school_name', name).execute()
-                        if len(data) > 0:
+                        st.write(data)
+                        if len(data[1]) > 0:
                             return False
                         else:
                             return True                   
                     if check_school_name(school_name):
                         data, count = upload_package('schools', upload_data)
+                        st.rerun()
                     else:
-                        st.write(f'The school {school_name} is already in the system.')
+                        st.write(f':red[The school {school_name} is already in the system.]')
     # edit contact information
     with edit_contact:
         st.subheader('Edit Contact Information')
@@ -134,9 +134,10 @@ with tab2:
     # first select the school
     school_option = st.selectbox('Please select your school', schools, key='edit_students_school_selection')
     def show_students():
-        students = supabase.table("recipients").select('*').eq('school_name', school_option).execute() 
-        students_df = pd.DataFrame(students.data).drop(['school_name', 'created_at'], axis=1)   
-        st.dataframe(students_df)
+        students = supabase.table("recipients").select('*').execute()
+        students_df = pd.DataFrame(students.data)
+        students_df = students_df[students_df['school_name'] == school_option]   
+        st.dataframe(students_df.drop(['school_name', 'created_at'], axis=1))
     show_students()
     
     add_student, remove_student = st.tabs(["Add Student", "Remove Student"])
