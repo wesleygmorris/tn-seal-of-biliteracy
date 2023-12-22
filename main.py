@@ -7,6 +7,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt 
 from dotenv import load_dotenv
 
+save=''
+
 sns.set_theme(context='notebook', style='darkgrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
 load_dotenv()
 
