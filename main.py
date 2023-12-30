@@ -58,7 +58,7 @@ if st.sidebar.checkbox("Login"):
     if result:
         st.success(f'Logged in as {school}')
 
-        tab1, tab2, tab3 = st.tabs(["Register or Update Participating School", "Submit Recipients", "Data and Visualizations"])
+        tab1, tab2, tab3 = st.tabs(["Edit School Contact Information", "Submit Recipients", "Data and Visualizations"])
         # Add schools tab
         with tab1:
             add_school_output = {}
