@@ -135,7 +135,7 @@ password = st.sidebar.text_input('Password', type='password')
 if st.sidebar.checkbox("Login"):
     result = login_user(school, password)
     if result:
-        st.success(f'Logged in as {school}')
+        st.success(f'Logged in as {school} for {year}')
         tab1, tab2, tab3 = st.tabs(["Submit Recipients", "Edit School Contact Information", "School Data"])
         
         # edit students tab
