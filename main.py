@@ -47,10 +47,16 @@ def upload_package(table, package):
 def show_students(school, year=False):
     students = supabase.table("recipients").select('*').eq('school_name', school).execute()
     students_df = pd.DataFrame(students.data)
-    if year:
-        st.dataframe(students_df[(students_df['year'] == year)].drop(['school_name'], axis=1).style.format({"Serial Number": "{}"}, precision=0))
+    if len(students_df) == 0:
+        st.write('No students currently registered for this school')
     else:
-        st.dataframe(students_df.drop(['school_name'], axis=1).style.format({"Serial Number": "{}"}, precision=0))
+        
+        if year:
+            st.write(f'Students currently enrolled in {school} for {year}')
+            st.dataframe(students_df[(students_df['year'] == year)].drop(['school_name'], axis=1).style.format({"Serial Number": "{}"}, precision=0))
+        else:
+            st.write(f'Students currently enrolled in {school}')
+            st.dataframe(students_df.drop(['school_name'], axis=1).style.format({"Serial Number": "{}"}, precision=0))
 
 def collect_prof_scores():
     st.write('World Language Proficiency Scores (Fill in only if appropriate)')
@@ -130,9 +136,7 @@ def login_user(username, password):
 school = st.sidebar.selectbox('School Name', list(schools['school_name']))
 password = st.sidebar.text_input('Password', type='password')
 
-
-
-if st.sidebar.checkbox("Login"):
+if st.sidebar.checkbox("**Click this Checkbox to Login**"):
     result = login_user(school, password)
     if result:
         st.success(f'Logged in as {school} for {year}')
@@ -294,3 +298,15 @@ if st.sidebar.checkbox("Login"):
     else:
         st.warning('Incorrect password')
 
+
+
+report = st.sidebar.text_area('This data entry tool is in testing. Please report any bugs or confusions when inputing test data', key='report_box')   
+
+def clear_text():
+    st.session_state["report_box"] = ""
+
+submitted = st.sidebar.button("Submit", on_click=clear_text)
+if submitted:
+    package = {'report': report}
+    upload_package('bug-reports', package)
+    st.sidebar.write('Thank you for your feedback!!')
