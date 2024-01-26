@@ -26,7 +26,7 @@ states = [ 'AK', 'AL', 'AR', 'AZ', 'CA', 'CO', 'CT', 'DC', 'DE', 'FL', 'GA',
            'MI', 'MN', 'MO', 'MS', 'MT', 'NC', 'ND', 'NE', 'NH', 'NJ', 'NM',
            'NV', 'NY', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX',
            'UT', 'VA', 'VT', 'WA', 'WI', 'WV', 'WY']
-language_backgrounds = ['Multilingual Student (e.g. NELB, ELL, LEP)', 'Native English Speaker']
+language_backgrounds = ['Current English Language Learner', 'Non-English Language Background Student/Native Speaker', 'Native English Speaker']
 year = 2024
 
 def init_connection():
@@ -59,7 +59,7 @@ def show_students(school, year=False):
             st.dataframe(students_df.drop(['school_name'], axis=1).style.format({"Serial Number": "{}"}, precision=0))
 
 def collect_prof_scores():
-    st.write('World Language Proficiency Scores (Fill in only if appropriate)')
+    st.write('World Language Proficiency Scores (Fill in only applicable boxes below)')
     d1,d2,d3,d4,d5 = st.columns(5)
     with d1:
         overall = st.text_input('Overall')
@@ -98,7 +98,9 @@ def contact_form():
     with h1:
         title1 = st.radio('Is your school eligible for Title 1?', ['yes', 'no'])
     with h2:
-        awarded_last_year = st.radio('Did you offer the award last academic year?', ['yes', 'no'])
+        #st.write('Which year(s) has your school participated in the award program through the Volunteer State Seal of Biliteracy?')
+        years = [i for i in range(2014, year)]
+        awarded_last_year = st.multiselect('Which year(s) has your school participated in the award program through the Volunteer State Seal of Biliteracy?', years)
     i1, i2 = st.columns(2)
     with i1:
         school_location = st.selectbox('School Location', ['West Tennessee', 'Middle Tennessee', 'East Tennessee']).lower()
@@ -136,7 +138,7 @@ def login_user(username, password):
 school = st.sidebar.selectbox('School Name', list(schools['school_name']))
 password = st.sidebar.text_input('Password', type='password')
 
-if st.sidebar.checkbox("**Click this Checkbox to Login**"):
+if st.sidebar.checkbox(":red[**Click this Checkbox to Login**]"):
     result = login_user(school, password)
     if result:
         st.success(f'Logged in as {school} for {year}')
@@ -198,8 +200,8 @@ if st.sidebar.checkbox("**Click this Checkbox to Login**"):
                             with c7:
                                 language_proficiency_criteria = st.selectbox('World Language Proficiency Criteria', world_criteria).lower()
                             overall, speaking, listening, reading, writing = collect_prof_scores()
-                            volunteer_hours = st.radio('10+ Documented Volunteer Hours, if applying for Honors', ['Yes', 'No'])
-                            spring_semester = st.radio('Student will take a national assessment during spring semester and will not receive score by Ap. 15', ['Yes', 'No'])
+                            volunteer_hours = st.radio('10+ Documented Volunteer Hours, if applying for Honors', ['No', 'Yes'])
+                            spring_semester = st.radio("Student will take a national assessment during spring semester and will not receive score by Ap. 15. \n Please be aware that this student should be listed as 'candidate' for the Seal until their score is verified and updated in the database.", ['No', 'Yes'])
                             rubric = ''
                         
 
