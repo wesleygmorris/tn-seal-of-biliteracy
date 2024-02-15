@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 from supabase import create_client, Client
 import os
@@ -9,6 +7,8 @@ import seaborn as sns
 from matplotlib import pyplot as plt 
 from dotenv import load_dotenv
 import numpy as np
+
+st.set_page_config(page_title=None, page_icon=None, layout="centered", initial_sidebar_state="expanded", menu_items=None)
 
 sns.set_theme(context='notebook', style='darkgrid', palette='deep', font='sans-serif', font_scale=1, color_codes=True, rc=None)
 load_dotenv()
